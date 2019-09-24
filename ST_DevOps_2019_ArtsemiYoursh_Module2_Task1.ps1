@@ -76,6 +76,8 @@ function P9D
 {
     Clear-Variable -Name * #Перед выполнением обнуляем все переменные
     $n = Read-Host "Задайте N"
-    Do {$i++ ; $S=$S+3*$i ; Write-output "На шаге $i, сумма S равна $S"}
+    Do {
+        $i++; $S=$S+3*$i; Write-output "На шаге $i, сумма S равна $S"
+    }
     While ($i -lt $n)  
 }
