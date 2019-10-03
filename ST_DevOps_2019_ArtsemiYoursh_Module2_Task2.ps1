@@ -33,7 +33,7 @@ Get-Process | Sort-Object CPU -Descending | Select-Object -First 6
 иначе зелёным.#>
 
 Get-Process | ForEach-Object {
-    if([int]$b = ($_.VirtualMemorySize / (1024*1024) -ge 100))
+    if ($_.VirtualMemorySize / (1024*1024) -ge 100)
         { 
     Write-Host $_.Name, '-', ([int]($_.VirtualMemorySize / (1024*1024))), 'Mb' -ForegroundColor Red
     }
@@ -53,10 +53,10 @@ Write-Host $b 'Mb'
 Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft -Recurse -Force | Export-Csv -Path P:\HKLM.csv
 
 #10.	Сохранить в XML -файле историческую информацию о командах выполнявшихся в текущем сеансе работы PS.\
-Get-History | Export-Clixml -Path P:\history.xml
+Get-History | Export-Clixml -Path d:\history.xml
 
 #11.	Загрузить данные из полученного в п.10 xml-файла и вывести в виде списка информацию о каждой записи, в виде 5 любых (выбранных Вами) свойств.
-Import-Clixml -Path P:\history.xml  | ForEach-Object {Write-Host $_.Start, $_.ID, $_.EndExecutionTime, $_.ExecutionStatus, $_.CommandLine} 
+Import-Clixml -Path d:\history.xml  | ForEach-Object {Write-Host $_.Start, $_.ID, $_.EndExecutionTime, $_.ExecutionStatus, $_.CommandLine} 
 
 #12.	Удалить созданный диск и папку С:\M2T2_ФАМИЛИЯ
 Remove-PSDrive -Name P
