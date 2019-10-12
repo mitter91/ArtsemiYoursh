@@ -27,12 +27,12 @@ Invoke-Command -ScriptBlock {
 
 $Comp = @("VM1","VM2","VM3")
 Invoke-Command -ScriptBlock {
-$NICs = Get-WMIObject Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled -eq “TRUE”}
-ForEach-Object ($NIC in $NICs) {
-     $NIC.EnableDHCP()    
-     $NIC.SetDNSServerSearchOrder()    
+    $NICs = Get-WMIObject Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled -eq “TRUE”}
+    ForEach-Object ($NIC in $NICs) {
+        $NIC.EnableDHCP()    
+        $NIC.SetDNSServerSearchOrder()    
     }
-IPConfig /all
+    IPConfig /all
 } -ComputerName $Comp -Credential Administrator
 
 
@@ -63,7 +63,26 @@ Invoke-Command -ScriptBlock {
 
 #1.6.	Скрипт входными параметрами которого являются Маска подсети и два ip-адреса. Результат  – сообщение (ответ) в одной ли подсети эти адреса.
 
+[CmdletBinding()]
+Param   ( 
+        [parameter(Mandatory=$false, HelpMessage="дай ip1")]
+        [string]$ip1 = "192.128.0.22",
+        [parameter(Mandatory=$false, HelpMessage="дай ip2")]
+        [string]$ip2 = "192.168.1.33",
+        [parameter(Mandatory=$false, HelpMessage="дай mask")]
+        [string]$mask1 = "255.255.0.0"
+    )
 
+[string]$mask2 = $mask1
+$ip1a = [IPAddress] "$ip1"
+$ip2a = [IPAddress] "$ip2"
+$networkMask1 = [IPAddress] $mask1
+$networkMask2 = [IPAddress] $mask2
+$networkID1 = [IPAddress] ($ip1a.Address -band $networkMask1.Address)
+$networkID2 = [IPAddress] ($ip2a.Address -band $networkMask2.Address)
+    if ($networkID1.IPAddressToString -eq $networkID2.IPAddressToString)
+        {Write-Host "We did it"}
+    else {Write-Host "Oh shit"}
 
 
 #2.	Работа с Hyper-V
@@ -112,4 +131,4 @@ New-VHD -Path D:\VMS\test\dddisc.vhdx -Dynamic -SizeBytes 20Mb
 
 #2.7.	Удалить созданную виртуальную машину
 
-Remove-VM -Name VM4
+Remove-VM -Name VM4 -Force
